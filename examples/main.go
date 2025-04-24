@@ -22,6 +22,7 @@ func main() {
 	defer sess.Close()
 
 	getData(sess)
+	getItem(sess)
 }
 
 func getData(sess *sysrepo.Session) {
@@ -44,5 +45,16 @@ func getData(sess *sysrepo.Session) {
 			fmt.Printf("%s:%s\n", b.Name(), b.Value())
 		}
 		fmt.Println("--------------------------")
+	}
+	fmt.Println("=============================")
+}
+
+func getItem(sess *sysrepo.Session) {
+	fmt.Println("GetItem from sysrepo")
+	hostname, err := sess.GetItem("/ietf-system:system/hostname")
+	if err != nil {
+		println("Error Getting hostname")
+	} else {
+		fmt.Println("Hostname: " + hostname)
 	}
 }
