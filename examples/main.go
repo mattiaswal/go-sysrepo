@@ -37,9 +37,12 @@ func getData(sess *sysrepo.Session) {
 
 	child := node.Child()
 	sources := child.ChildByName("sources")
-	source := sources.ChildByName("source")
-	for n := source.Child(); n.Ptr != nil; n = n.Next() {
-		fmt.Printf("Found matching node: %s, value: %s\n", n.Name(), n.Value())
-	}
 
+	for a := sources.Child(); a.Ptr != nil; a = a.Next() {
+		child := a.Child()
+		for b := child.FirstSibling(); b.Ptr != nil; b = b.Next() {
+			fmt.Printf("%s:%s\n", b.Name(), b.Value())
+		}
+		fmt.Println("--------------------------")
+	}
 }
