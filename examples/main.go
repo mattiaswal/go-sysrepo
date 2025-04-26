@@ -30,20 +30,19 @@ func getData(sess *sysrepo.Session) {
 
 	path := "/ietf-system:system-state/ntp/sources"
 
-	node, _ := sess.GetData(path, 0, 0, 0)
-	defer node.Free()
+	tree, _ := sess.GetData(path, 0, 0, 0)
+	defer tree.Free()
 
-	fmt.Print(node.Print(libyang.DataFormatJSON))
+	fmt.Print(tree.Print(libyang.DataFormatJSON))
 	fmt.Println("=============================")
 
-	child := node.Child()
+	child := tree.Child()
 	sources := child.ChildByName("sources")
 
-	for a := sources.Child(); a.Ptr != nil; a = a.Next() {
-		child := a.Child()
-		for b := child.FirstSibling(); b.Ptr != nil; b = b.Next() {
-			fmt.Printf("%s:%s\n", b.Name(), b.Value())
-		}
+	for node := sources.Child(); node.Ptr != nil; node = node.Next() {
+		poll := node.ChildValue("poll")
+		address := node.ChildValue("address")
+		fmt.Println("Addess: " + address + " Poll: " + poll)
 		fmt.Println("--------------------------")
 	}
 	fmt.Println("=============================")
